@@ -155,7 +155,7 @@ public:
    * @param height Height
    * @note width/height are only applicable to billboards and boxes, depth is only applicable to boxes
    */
-  void setDimensions( float width, float height, float depth );
+  void setDimensions( Ogre::Real width, Ogre::Real height, Ogre::Real depth );
 
   /*
    * If set to true, the size of each point will be multiplied by it z component.
@@ -181,7 +181,7 @@ public:
 
   virtual const Ogre::String& getMovableType() const { return sm_Type; }
   virtual const Ogre::AxisAlignedBox& getBoundingBox() const;
-  virtual float getBoundingRadius() const;
+  virtual Ogre::Real getBoundingRadius() const;
   virtual void getWorldTransforms( Ogre::Matrix4* xform ) const;
   virtual unsigned short getNumWorldTransforms() const { return 1; }
   virtual void _updateRenderQueue( Ogre::RenderQueue* queue );
@@ -201,16 +201,16 @@ private:
   void shrinkRenderables();
 
   Ogre::AxisAlignedBox bounding_box_;       ///< The bounding box of this point cloud
-  float bounding_radius_;                   ///< The bounding radius of this point cloud
+  Ogre::Real bounding_radius_;                   ///< The bounding radius of this point cloud
 
   typedef std::vector<Point> V_Point;
   V_Point points_;                          ///< The list of points we're displaying.  Allocates to a high-water-mark.
   uint32_t point_count_;                    ///< The number of points currently in #points_
 
   RenderMode render_mode_;
-  float width_;                             ///< width
-  float height_;                            ///< height
-  float depth_;                             ///< depth
+  Ogre::Real width_;                             ///< width
+  Ogre::Real height_;                            ///< height
+  Ogre::Real depth_;                             ///< depth
   Ogre::Vector3 common_direction_;          ///< See Ogre::BillboardSet::setCommonDirection
   Ogre::Vector3 common_up_vector_;          ///< See Ogre::BillboardSet::setCommonUpVector
 

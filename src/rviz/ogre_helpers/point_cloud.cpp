@@ -49,7 +49,7 @@
 #include "rviz/ogre_helpers/custom_parameter_indices.h"
 #include "rviz/selection/forwards.h"
 
-#define VERTEX_BUFFER_CAPACITY (36 * 1024 * 10)
+#define VERTEX_BUFFER_CAPACITY (36 * 1024 * 10 * 2)
 
 namespace rviz
 {
@@ -198,7 +198,7 @@ const Ogre::AxisAlignedBox& PointCloud::getBoundingBox() const
   return bounding_box_;
 }
 
-float PointCloud::getBoundingRadius() const
+Ogre::Real PointCloud::getBoundingRadius() const
 {
   return bounding_radius_;
 }
@@ -343,7 +343,7 @@ void PointCloud::setRenderMode(RenderMode mode)
   regenerateAll();
 }
 
-void PointCloud::setDimensions(float width, float height, float depth)
+void PointCloud::setDimensions(Ogre::Real width, Ogre::Real height, Ogre::Real depth)
 {
   width_ = width;
   height_ = height;
@@ -579,15 +579,16 @@ void PointCloud::addPoints(Point* points, uint32_t num_points)
     aabb.merge(p.position);
     bounding_radius_ = std::max( bounding_radius_, p.position.squaredLength() );
 
-    float x = p.position.x;
-    float y = p.position.y;
-    float z = p.position.z;
+    double x = p.position.x;
+    double y = p.position.y;
+    double z = p.position.z;
 
     for (uint32_t j = 0; j < vpp; ++j, ++current_vertex_count)
     {
-      *fptr++ = x;
-      *fptr++ = y;
-      *fptr++ = z;
+      *((double *)fptr + 0) = x;
+      *((double *)fptr + 1)  = y;
+      *((double *)fptr + 2)  = z;
+      fptr += 6;
 
       if (!current_mode_supports_geometry_shader_)
       {
@@ -810,8 +811,8 @@ PointCloudRenderable::PointCloudRenderable(PointCloud* parent, int num_points, b
   Ogre::VertexDeclaration *decl = mRenderOp.vertexData->vertexDeclaration;
   size_t offset = 0;
 
-  decl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-  offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+  decl->addElement(0, offset, Ogre::VET_DOUBLE3, Ogre::VES_POSITION);
+  offset += Ogre::VertexElement::getTypeSize(Ogre::VET_DOUBLE3);
 
   if (use_tex_coords)
   {
